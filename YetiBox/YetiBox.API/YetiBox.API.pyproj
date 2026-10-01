@@ -11,7 +11,9 @@
     <OutputPath>.</OutputPath>
     <Name>YetiBox.API</Name>
     <RootNamespace>YetiBox.API</RootNamespace>
-    <InterpreterId>MSBuild|YetiBoxApiEnvironment|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,10 +27,10 @@
     <Compile Include="YetiBox.API.py" />
   </ItemGroup>
   <ItemGroup>
-    <Interpreter Include="YetiBoxApiEnvironment\">
-      <Id>YetiBoxApiEnvironment</Id>
+    <Interpreter Include="venv\">
+      <Id>venv</Id>
       <Version>3.9</Version>
-      <Description>YetiBoxApiEnvironment (Python 3.9 (64-bit))</Description>
+      <Description>venv (Python 3.9 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
