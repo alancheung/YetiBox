@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36915.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "yetibox.ui", "YetiBox.UI\yetibox.ui.esproj", "{E4478F33-6FBA-9DAE-4554-98EB0CBB3908}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "YetiBox.API", "YetiBox.API\YetiBox.API.pyproj", "{1E23184F-AB1F-48C1-95F4-A18743B1C943}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,8 @@ Global
 		{E4478F33-6FBA-9DAE-4554-98EB0CBB3908}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4478F33-6FBA-9DAE-4554-98EB0CBB3908}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E4478F33-6FBA-9DAE-4554-98EB0CBB3908}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{1E23184F-AB1F-48C1-95F4-A18743B1C943}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E23184F-AB1F-48C1-95F4-A18743B1C943}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
