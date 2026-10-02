@@ -1,12 +1,15 @@
+from importlib import reload
 import os
+import queue
+import threading
 import uvicorn
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from constants import *
+import streamer
 
-# Initialize the application
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -15,6 +18,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+image_queue = queue.Queue(maxsize=1)
 
 @app.get("/")
 def read_root():
@@ -22,7 +26,15 @@ def read_root():
 
 @app.get("/data")
 def get_data():
-    return "Some Data!"
+    try:
+        retObj = image_queue.get(block=True, timeout=3)
+    except Exception as ex:
+        retObj = ex
+    return retObj
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host=LOCAL_HOST_IP, port=PORT, reload=True)
+    camera = streamer.TestStreamer(image_queue)
+    cameraThread = threading.Thread(target=camera.run)
+
+    cameraThread.start()
+    uvicorn.run(app, host=LOCAL_HOST_IP, port=PORT)
