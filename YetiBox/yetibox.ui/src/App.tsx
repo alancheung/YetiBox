@@ -1,7 +1,17 @@
 import './App.scss'
 import { useState } from 'react';
 
-function App() {
+function PayloadComponent({ loading, error, data }: { loading:boolean, error: string | null, data: any}): React.JSX.Element {
+    if (loading) {
+        return <>Loading...</>;
+    } else if (error) {
+        return <>Error - {error}</>;
+    } else {
+        return <>{data}</>;
+    }
+}
+
+function AppComponent(): React.JSX.Element  {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -29,27 +39,15 @@ function App() {
         }
     };
 
-    function Payload() {
-        if (loading) {
-            return <>Loading...</>;
-        }
-        else if (error) {
-            return <>Error - {error}</>;
-        }
-        else {
-            return <>{data}</>;
-        }
-    }
-
     return (
         <>
             <button onClick={getServerData} disabled={loading}>
                 <label>Click Me!</label>
             </button>
-            <h1>Payload from Server: <Payload /></h1>
+            <h1>Payload from Server: <PayloadComponent loading={loading} error={error} data={data} /></h1>
             <span>Last request: {date.toLocaleString()}</span>
         </>
     );
 }
 
-export default App
+export default AppComponent
