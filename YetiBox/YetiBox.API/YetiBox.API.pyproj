@@ -25,6 +25,7 @@
     </PythonDebugWebServerCommandArguments>
     <InterpreterPath>
     </InterpreterPath>
+    <TestFramework>Pytest</TestFramework>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
