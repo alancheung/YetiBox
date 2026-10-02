@@ -1,5 +1,4 @@
-from importlib import reload
-import os
+import cv2
 import queue
 import threading
 import uvicorn
@@ -33,8 +32,9 @@ def get_data():
     return retObj
 
 if __name__ == "__main__":
-    camera = streamer.TestStreamer(image_queue)
-    cameraThread = threading.Thread(target=camera.run)
+    # streamer = streamer.TestStreamer(image_queue)
+    streamer = streamer.UsbStreamer(image_queue, streamer.UsbCameraConfig(local_display=True))
 
-    cameraThread.start()
+    streamerThread = threading.Thread(target=streamer.run)
+    streamerThread.start()
     uvicorn.run(app, host=LOCAL_HOST_IP, port=PORT)

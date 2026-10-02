@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="constants.py" />
     <Compile Include="main.py" />
+    <Compile Include="streamer\usb_streamer.py" />
     <Compile Include="streamer\network_streamer.py" />
     <Compile Include="streamer\test_streamer.py" />
     <Compile Include="streamer\__init__.py">
