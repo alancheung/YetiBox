@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from constants import LOCAL_HOST_IP, PORT
+from constants import *
 
 # Initialize the application
 app = FastAPI()
