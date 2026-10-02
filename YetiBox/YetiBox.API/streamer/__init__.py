@@ -1,5 +1,14 @@
+from dataclasses import dataclass
 from typing import Protocol
 import queue
+
+@dataclass
+class OpenCvConfig:
+    ''' Index of the camera to use '''
+    camera_index: int = 0
+
+    ''' Should the video stream be displayed locally for testing '''
+    local_display: bool = False
 
 ''' Interface for a streamer '''
 class IStreamer(Protocol):
@@ -30,5 +39,5 @@ class IStreamer(Protocol):
 
 from .network_streamer import NetworkStreamer
 from .test_streamer import TestStreamer
-from .usb_streamer import UsbStreamer, UsbCameraConfig
+from .usb_streamer import UsbStreamer
 
