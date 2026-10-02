@@ -37,6 +37,11 @@
   <ItemGroup>
     <Compile Include="constants.py" />
     <Compile Include="main.py" />
+    <Compile Include="streamer\network_streamer.py" />
+    <Compile Include="streamer\test_streamer.py" />
+    <Compile Include="streamer\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="venv\">
@@ -51,6 +56,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="streamer\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
