@@ -10,8 +10,8 @@ class OpenCvConfig:
     ''' Should the video stream be displayed locally for testing '''
     local_display: bool = False
 
-''' Interface for a streamer '''
-class IStreamer(Protocol):
+''' Interface for a camera '''
+class ICamera(Protocol):
     ''' Constructor '''
     def __init__(self, data_queue):
         self.data_queue = data_queue
@@ -37,7 +37,7 @@ class IStreamer(Protocol):
             pass
 
 
-from .network_streamer import NetworkStreamer
-from .test_streamer import TestStreamer
-from .usb_streamer import UsbStreamer
+from .network_camera import NetworkCamera
+from .test_camera import TestCamera
+from .usb_camera import UsbCamera
 

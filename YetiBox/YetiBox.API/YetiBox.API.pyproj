@@ -42,10 +42,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="main.py" />
-    <Compile Include="streamer\usb_streamer.py" />
-    <Compile Include="streamer\network_streamer.py" />
-    <Compile Include="streamer\test_streamer.py" />
-    <Compile Include="streamer\__init__.py">
+    <Compile Include="camera\usb_camera.py" />
+    <Compile Include="camera\network_camera.py" />
+    <Compile Include="camera\test_camera.py" />
+    <Compile Include="camera\__init__.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="controllers\" />
-    <Folder Include="streamer\" />
+    <Folder Include="camera\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -5,10 +5,10 @@ import threading
 import cv2
 from fastapi import APIRouter, FastAPI, HTTPException, Request, Response, status
 
-import streamer
+import camera
 
 image_queue = queue.Queue(maxsize=1)
-streamer = streamer.UsbStreamer(image_queue, streamer.OpenCvConfig(local_display=True))
+camera = camera.UsbCamera(image_queue, camera.OpenCvConfig(local_display=True))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/capture")
 @router.get("/")
 def get_status() -> str:
     ''' Return a string representing the status '''
-    if not streamer.ready:
+    if not camera.ready:
         return "Not Ready!"
 
     return "Running!"
@@ -28,14 +28,14 @@ def get_status() -> str:
 @router.post("/start")
 def start() -> None:
     ''' Start the camera stream '''
-    # streamer = streamer.TestStreamer(image_queue)
+    # camera = camera.TestCamera(image_queue)
     
-    streamerThread = threading.Thread(target=streamer.run)
-    streamerThread.start()
+    cameraThread = threading.Thread(target=camera.run)
+    cameraThread.start()
 
 @router.post("/stop")
 def start() -> None:
-    if not streamer.ready:
+    if not camera.ready:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Camera is not ready!")
 
 
@@ -43,7 +43,7 @@ def start() -> None:
 def get_frame(request: Request) -> Response:
     ''' Display the last frame '''
     try:
-        if not streamer.ready:
+        if not camera.ready:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Camera is not ready!")
 
         qObj = image_queue.get(block=True, timeout=3)

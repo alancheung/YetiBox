@@ -2,7 +2,7 @@ import time
 import queue
 
 ''' A class for streaming data retrieved from the network'''
-class TestStreamer:
+class TestCamera:
     ''' Constructor '''
     def __init__(self, data_queue: queue.Queue) -> None:
         self.data_queue = data_queue

@@ -1,7 +1,7 @@
 import time
 import queue
 
-class NetworkStreamer:
+class NetworkCamera:
     ''' Constructor '''
     def __init__(self, data_queue: queue.Queue) -> None:
         self.data_queue = data_queue

@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import constants
-import streamer
+import camera
 import controllers
 
 @asynccontextmanager
