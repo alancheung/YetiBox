@@ -1,15 +1,22 @@
+from contextlib import asynccontextmanager
 import queue
 import threading
 
 import cv2
-from fastapi import APIRouter, HTTPException, Request, Response, status
+from fastapi import APIRouter, FastAPI, HTTPException, Request, Response, status
 
 import streamer
 
 image_queue = queue.Queue(maxsize=1)
 streamer = streamer.UsbStreamer(image_queue, streamer.OpenCvConfig(local_display=True))
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    ''' FastAPI lifespan to handle multiprocess threading '''
+    yield
+
 router = APIRouter(prefix="/capture")
+
 @router.get("/")
 def get_status() -> str:
     ''' Return a string representing the status '''

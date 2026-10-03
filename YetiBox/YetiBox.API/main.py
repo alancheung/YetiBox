@@ -1,3 +1,4 @@
+from contextlib import AsyncExitStack, asynccontextmanager
 import cv2
 import queue
 import threading
@@ -6,9 +7,15 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from constants import *
+import constants
 import streamer
 import controllers
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    async with AsyncExitStack() as stack:
+        await stack.enter_async_context(controllers.stream_lifespan(app))
+        yield
 
 app = FastAPI()
 app.add_middleware(
@@ -21,4 +28,4 @@ app.add_middleware(
 app.include_router(controllers.stream_router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=LOCAL_HOST_IP, port=PORT)
+    uvicorn.run(app, host=constants.LOCAL_HOST_IP, port=constants.PORT)
