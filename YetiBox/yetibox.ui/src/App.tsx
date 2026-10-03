@@ -17,14 +17,34 @@ function AppComponent(): React.JSX.Element  {
     const [error, setError] = useState(null);
     const [date, setDate] = useState(() => new Date());
 
-    const getServerData = async () => {
+    const clickStart = async () => {
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch('http://localhost:8000/capture/start', {
+                method: 'POST'
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return;
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+            setDate(() => new Date());
+        }
+    }
+
+    const clickGetFrame = async () => {
         setLoading(true);
         setError(null);
         setData(null);
         try {
-            const response = await fetch('http://localhost:8000/data');
-
-            // Check if the HTTP request was successful (status 200-299)
+            const response = await fetch('http://localhost:8000/capture/frame');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -41,8 +61,11 @@ function AppComponent(): React.JSX.Element  {
 
     return (
         <>
-            <button onClick={getServerData} disabled={loading}>
-                <label>Click Me!</label>
+            <button onClick={clickStart} disabled={loading}>
+                <label>Start Capture</label>
+            </button>
+            <button onClick={clickGetFrame} disabled={loading}>
+                <label>Get Frame</label>
             </button>
             <h1>Payload from Server: <PayloadComponent loading={loading} error={error} data={data} /></h1>
             <span>Last request: {date.toLocaleString()}</span>
