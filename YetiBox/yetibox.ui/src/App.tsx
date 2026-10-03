@@ -1,7 +1,7 @@
 import './App.scss'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-function PayloadComponent({ loading, error, data }: { loading:boolean, error: string | null, data: any}): React.JSX.Element {
+function PayloadComponent({ loading, error, data }: { loading: boolean, error: string | null, data: any }): React.JSX.Element {
     if (loading) {
         return <>Loading...</>;
     } else if (error) {
@@ -11,10 +11,11 @@ function PayloadComponent({ loading, error, data }: { loading:boolean, error: st
     }
 }
 
-function AppComponent(): React.JSX.Element  {
+function AppComponent(): React.JSX.Element {
     const [data, setData] = useState(null);
+    const [error, setError] = useState<string | null>(null);
+    const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const [date, setDate] = useState(() => new Date());
 
     const clickStart = async () => {
@@ -44,13 +45,15 @@ function AppComponent(): React.JSX.Element  {
         setError(null);
         setData(null);
         try {
+
             const response = await fetch('http://localhost:8000/capture/frame');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-            setData(result);
+            const frameBlob = await response.blob();
+            const imageUrl = URL.createObjectURL(frameBlob);
+            setImageSrc(imageUrl);
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -58,6 +61,14 @@ function AppComponent(): React.JSX.Element  {
             setDate(() => new Date());
         }
     };
+
+    useEffect(() => {
+        return () => {
+            if (imageSrc) {
+                URL.revokeObjectURL(imageSrc);
+            }
+        };
+    }, [imageSrc]);
 
     return (
         <>
@@ -67,8 +78,13 @@ function AppComponent(): React.JSX.Element  {
             <button onClick={clickGetFrame} disabled={loading}>
                 <label>Get Frame</label>
             </button>
-            <h1>Payload from Server: <PayloadComponent loading={loading} error={error} data={data} /></h1>
+
+            <h1>Status from Server: <PayloadComponent loading={loading} error={error} data={data} /></h1>
             <span>Last request: {date.toLocaleString()}</span>
+
+            <hr />
+
+            {!!imageSrc && <img src={imageSrc} />}
         </>
     );
 }
