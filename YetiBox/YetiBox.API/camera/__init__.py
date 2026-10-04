@@ -3,7 +3,7 @@ from typing import Protocol
 import queue
 
 @dataclass
-class OpenCvConfig:
+class CameraConfig:
     ''' Index of the camera to use '''
     camera_index: int = 0
 

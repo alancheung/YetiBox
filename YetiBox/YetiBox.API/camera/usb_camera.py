@@ -1,12 +1,12 @@
 import queue
 import cv2
-from camera import OpenCvConfig
+from camera import CameraConfig
 
 
-''' ICamera that retrieves camera images from USB and makes them available '''
+''' ICamera that retrieves camera images from a USB camera and makes them available '''
 class UsbCamera():
     ''' Constructor '''
-    def __init__(self, data_queue: queue.Queue, config: OpenCvConfig):
+    def __init__(self, data_queue: queue.Queue, config: CameraConfig):
         self.data_queue = data_queue
         self.config = config
         self.ready = False
