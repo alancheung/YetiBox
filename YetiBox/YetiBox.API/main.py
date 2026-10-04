@@ -26,6 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(controllers.stream_router)
+app.include_router(controllers.decompiler_router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host=constants.LOCAL_HOST_IP, port=constants.PORT)

@@ -37,6 +37,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="constants.py" />
+    <Compile Include="controllers\decompiler.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="controllers\stream.py" />
     <Compile Include="controllers\__init__.py">
       <SubType>Code</SubType>
