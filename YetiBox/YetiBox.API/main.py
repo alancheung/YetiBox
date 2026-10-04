@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
         await stack.enter_async_context(controllers.stream_lifespan(app))
         yield
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:58369"],
