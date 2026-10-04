@@ -45,6 +45,10 @@ class CameraWorker(mp.Process):
                 try:
                     processed_frame = self.process_frame(raw_frame)
                     self._put_frame(self.processed_queue, processed_frame)
+                    
+                    if self.config.local_display:
+                        cv2.imshow('Worker', processed_frame)
+                        cv2.waitKey(1)
                 except QueueEmpty:
                     continue # skips instead of pass
         except BaseException as ex:
