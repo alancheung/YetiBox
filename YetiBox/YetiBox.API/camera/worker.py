@@ -1,7 +1,10 @@
-﻿import multiprocessing as mp
-from queue import Queue as ThreadQueue
+﻿from datetime import datetime
+import multiprocessing as mp
+from queue import Queue as ThreadQueue, Empty as QueueEmpty, Full as QueueFull
 from threading import Thread
 from time import sleep
+
+import cv2
 
 from camera import CameraConfig, CameraType, ICamera, UsbCamera
 
@@ -27,14 +30,22 @@ class CameraWorker(mp.Process):
         
         try:
             while True:
-                # Make the raw frame available ASAP for viewers
-                raw_frame = self.input_queue.get_nowait()
-                _ = self.raw_queue.get_nowait()
-                self.raw_queue.put_nowait(raw_frame)
+                if not self.camera.ready:
+                    continue
+
+                try:
+                    raw_frame = self.input_queue.get_nowait()
+
+                    # Make the raw frame available ASAP for viewers
+                    self._put_frame(self.raw_queue, raw_frame)
+                except QueueEmpty:
+                    continue # skips instead of pass
                 
-                processed_frame = self.process_frame(raw_frame)
-                _ = self.processed_queue.get_nowait()
-                self.processed_queue.put_nowait(processed_frame)
+                try:
+                    processed_frame = self.process_frame(raw_frame)
+                    self._put_frame(self.processed_queue, processed_frame)
+                except QueueEmpty:
+                    continue # skips instead of pass
         except BaseException as ex:
             print(f"Exception encountered in camera worker! Exception {ex}")
 
@@ -52,10 +63,16 @@ class CameraWorker(mp.Process):
             case _:
                 raise ValueError(f"Camera of type {config.camera_type} is unsupported!")
 
-    def process_frame():
-        print('Processed frame in worker')
-        sleep(2)
-        pass
+    def process_frame(self, frame):
+        cv2.putText(frame, text=f"Processed {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+        return frame
 
+    @staticmethod
+    def _put_frame(queue: mp.Queue, frame) -> None:
+        try:
+            queue.put_nowait(frame)
+        except QueueFull:
+            queue.get_nowait()
+            queue.put_nowait(frame)
 
 

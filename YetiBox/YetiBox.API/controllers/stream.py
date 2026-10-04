@@ -46,7 +46,7 @@ def get_frame(request: Request) -> Response:
     ''' Display the last frame '''
     try:
         try:
-            qObj = raw_queue.get(block=True, timeout=3)
+            qObj = processed_queue.get(block=True, timeout=3)
         except queue.Empty:
             return Response(status_code=status.HTTP_204_NO_CONTENT, detail="No data available in queue!");
         
