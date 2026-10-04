@@ -1,9 +1,18 @@
 from dataclasses import dataclass
+from enum import Enum, auto
 from typing import Protocol
 import queue
 
+class CameraType(Enum):
+    TEST =  1
+    USB = 2
+    NETWORK = 3
+    
+
 @dataclass
 class CameraConfig:
+    camera_type: CameraType = CameraType.USB
+
     ''' Index of the camera to use '''
     camera_index: int = 0
 
@@ -40,4 +49,5 @@ class ICamera(Protocol):
 from .network_camera import NetworkCamera
 from .test_camera import TestCamera
 from .usb_camera import UsbCamera
+from .worker import CameraWorker
 

@@ -11,7 +11,7 @@
     <OutputPath>.</OutputPath>
     <Name>YetiBox.API</Name>
     <RootNamespace>YetiBox.API</RootNamespace>
-    <InterpreterId>MSBuild|venv|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|env313|$(MSBuildProjectFullPath)</InterpreterId>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
     <WebBrowserPort>8000</WebBrowserPort>
@@ -36,6 +36,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="camera\worker.py" />
     <Compile Include="constants.py" />
     <Compile Include="controllers\decompiler.py">
       <SubType>Code</SubType>
@@ -53,6 +54,24 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Interpreter Include="env313\">
+      <Id>env313</Id>
+      <Version>3.13</Version>
+      <Description>env313 (Python 3.13.16)</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="env314\">
+      <Id>env314</Id>
+      <Version>3.14</Version>
+      <Description>env314 (Python 3.14.8)</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
     <Interpreter Include="venv\">
       <Id>venv</Id>
       <Version>3.9</Version>
