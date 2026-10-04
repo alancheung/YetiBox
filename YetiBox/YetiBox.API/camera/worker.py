@@ -27,6 +27,7 @@ class CameraWorker(mp.Process):
         '''
         self.camera_thread = self.__setup_io_thread(self.config)
         self.camera_thread.start()
+        self.qr_detector = cv2.QRCodeDetector()
         
         try:
             while True:
@@ -64,7 +65,13 @@ class CameraWorker(mp.Process):
                 raise ValueError(f"Camera of type {config.camera_type} is unsupported!")
 
     def process_frame(self, frame):
-        cv2.putText(frame, text=f"Processed {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+        data, bbox, _ = self.qr_detector.detectAndDecode(frame)
+        if bbox is not None and data:
+            bbox = bbox.astype(int)
+            cv2.polylines(frame, [bbox], isClosed=True, color=(0, 255, 0), thickness=3)
+            cv2.putText(frame, text=f"QR Code Detected '{data}'! {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+        else:
+            cv2.putText(frame, text=f"Processed {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
         return frame
 
     @staticmethod
