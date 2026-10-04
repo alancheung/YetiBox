@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "YetiBox API (Python)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}\\YetiBox\\YetiBox.API\\main.py",
+      "cwd": "${workspaceFolder}\\YetiBox\\YetiBox.API",
+      "console": "integratedTerminal",
+      "subProcess": true
+    },
+    {
+      "name": "YetiBox UI (Vite)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev",
+      "cwd": "${workspaceFolder}\\YetiBox\\YetiBox.UI"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "YetiBox (ALL)",
+      "configurations": [
+        "YetiBox API (Python)",
+        "YetiBox UI (Vite)"
+      ],
+      "stopAll": true
+    }
+  ]
+}
