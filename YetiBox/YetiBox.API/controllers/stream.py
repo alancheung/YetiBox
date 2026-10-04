@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 import multiprocessing as mp
+import queue
 import threading
 
 import cv2
@@ -15,7 +16,7 @@ processed_queue = mp.Queue(maxsize=1)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     ''' FastAPI lifespan to handle multiprocess threading '''
-    app.camera_worker = camera.CameraWorker(config=camera.OpenCvConfig(local_display=True), raw_queue=raw_queue, processed_queue=processed_queue)
+    app.camera_worker = camera.CameraWorker(config=camera.CameraConfig(local_display=True), raw_queue=raw_queue, processed_queue=processed_queue)
     
     yield # let rest of program run
 
@@ -27,11 +28,7 @@ router = APIRouter(prefix="/capture")
 
 @router.get("/")
 def get_status() -> str:
-    ''' Return a string representing the status '''
-    if not camera.ready:
-        return "Not Ready!"
-
-    return "Running!"
+    pass
 
 @router.post("/start")
 def start(request: Request) -> None:
@@ -48,21 +45,21 @@ def start() -> None:
 def get_frame(request: Request) -> Response:
     ''' Display the last frame '''
     try:
-        if not camera.ready:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Camera is not ready!")
-
-        qObj = raw_queue.get(block=True, timeout=3)
+        try:
+            qObj = raw_queue.get(block=True, timeout=3)
+        except queue.Empty:
+            return Response(status_code=status.HTTP_204_NO_CONTENT, detail="No data available in queue!");
         
         cv2.imshow('FastAPI Frame', qObj)
         cv2.waitKey(1)
 
         success, encoded_image = cv2.imencode('.jpg', qObj)
         if not success:
-            raise HTTPException(status_code=500, detail="Failed to encode image frame")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to encode image frame")
 
         return Response(content=encoded_image.tobytes(), media_type="image/jpeg")
-    except mp.Queue.exc as ex:
-        raise HTTPException(status_code=status.HTTPHTTP_500_INTERNAL_SERVER_ERROR, detail="Queue is empty!")
+    except BaseException as ex:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Exception! {ex}")
 
 
 

@@ -12,10 +12,9 @@ class CameraWorker(mp.Process):
         # Exits on crash
         self.daemon = True
 
-        # Before image processing as fast as possible
+        self.config = config
         self.raw_queue = raw_queue
         self.processed_queue = processed_queue
-        self.camera_thread = self.__setup_io_thread(config)
 
     def run(self) -> None:
         ''' The main work process loop.
@@ -23,6 +22,7 @@ class CameraWorker(mp.Process):
         2. Run OpenCV on unprocessed frame creating a processed frame
         3. Output the processed frame.
         '''
+        self.camera_thread = self.__setup_io_thread(self.config)
         self.camera_thread.start()
         
         try:
@@ -37,7 +37,6 @@ class CameraWorker(mp.Process):
                 self.processed_queue.put_nowait(processed_frame)
         except BaseException as ex:
             print(f"Exception encountered in camera worker! Exception {ex}")
-            pass
 
     def __setup_io_thread(self, config: CameraConfig) -> Thread:
         ''' Setup the IO thread to input unprocessed frames '''
