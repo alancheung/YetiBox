@@ -17,7 +17,8 @@ processed_queue = mp.Queue(maxsize=1)
 async def lifespan(app: FastAPI):
     ''' FastAPI lifespan to handle multiprocess threading '''
     app.camera_worker = camera.CameraWorker(config=camera.CameraConfig(local_display=True), raw_queue=raw_queue, processed_queue=processed_queue)
-    
+    app.camera_worker.start()
+
     yield # let rest of program run
 
     if app.camera_worker.is_alive():
@@ -32,12 +33,18 @@ def get_status() -> str:
 
 @router.post("/start")
 def start(request: Request) -> None:
-    ''' Start the camera stream '''
-    request.app.camera_worker.start()
-    return
+    '''
+   Start the camera stream 
+   TODO should use events for this
+    '''
+    pass
 
 @router.post("/stop")
-def start() -> None:
+def stop(request: Request) -> None:
+    '''
+   Stop the camera stream 
+   TODO should use events for this
+    '''
     pass
 
 
