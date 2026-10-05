@@ -1,5 +1,5 @@
 import './App.scss'
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function PayloadComponent({ loading, error, data }: { loading: boolean, error: string | null, data: any }): React.JSX.Element {
     if (loading) {
@@ -12,10 +12,11 @@ function PayloadComponent({ loading, error, data }: { loading: boolean, error: s
 }
 
 function AppComponent(): React.JSX.Element {
-    const [data, setData] = useState(null);
+    const [data] = useState(null);
     const [error, setError] = useState<string | null>(null);
     const [imageSrc, setImageSrc] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const [streaming, setStreaming] = useState(false);
     const [date, setDate] = useState(() => new Date());
 
     const clickStart = async () => {
@@ -40,20 +41,27 @@ function AppComponent(): React.JSX.Element {
         }
     }
 
+    const toggleStream = () => {
+        setError(null);
+        setStreaming((current) => !current);
+        setDate(() => new Date());
+    };
+
     const clickGetFrame = async () => {
         setLoading(true);
         setError(null);
-        setData(null);
-        try {
 
+        try {
             const response = await fetch('http://localhost:8000/capture/frame');
+            if (response.status === 204) {
+                throw new Error('No frame is currently available.');
+            }
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const frameBlob = await response.blob();
-            const imageUrl = URL.createObjectURL(frameBlob);
-            setImageSrc(imageUrl);
+            setImageSrc(URL.createObjectURL(frameBlob));
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -78,13 +86,17 @@ function AppComponent(): React.JSX.Element {
             <button onClick={clickGetFrame} disabled={loading}>
                 <label>Get Frame</label>
             </button>
+            <button onClick={toggleStream}>
+                <label>{streaming ? 'Stop Live Stream' : 'Start Live Stream'}</label>
+            </button>
 
             <h1>Status from Server: <PayloadComponent loading={loading} error={error} data={data} /></h1>
             <span>Last request: {date.toLocaleString()}</span>
 
             <hr />
 
-            {!!imageSrc && <img src={imageSrc} />}
+            {!!imageSrc && <img src={imageSrc}/>}
+            {!!streaming && <img src="http://localhost:8000/capture/stream" />}
         </>
     );
 }
