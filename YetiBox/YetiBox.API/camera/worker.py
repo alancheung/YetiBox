@@ -83,7 +83,16 @@ class CameraWorker(mp.Process):
         try:
             queue.put_nowait(frame)
         except QueueFull:
-            queue.get_nowait()
+            try:
+                queue.get_nowait()
+            except QueueEmpty:
+                # This is an interesting case. We're only intending one consumer of this queue.
+                # The consumer is not also a producer so the only interaction between this class and a consumer
+                # is when the consumer takes the frame after the detection here that the queue is full.
+                # Since we are also attempting to free the queue just ignore it if it was stolen. 
+                # Assume that the consumer handles if the get_nowait() handles their frame stolen
+                # Put the next one here, we don't care if they get it or not.
+                pass 
             queue.put_nowait(frame)
 
 
