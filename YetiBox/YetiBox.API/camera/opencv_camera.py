@@ -3,7 +3,7 @@ import cv2
 from camera import CameraConfig
 
 
-''' ICamera that retrieves camera images from a USB camera and makes them available '''
+''' ICamera that retrieves camera images using OpenCV and makes them available '''
 class OpenCvCamera():
     ''' Constructor '''
     def __init__(self, data_queue: queue.Queue, config: CameraConfig):
@@ -12,9 +12,9 @@ class OpenCvCamera():
         self.ready = False
         pass
 
-    ''' Main entry point to run the entire IStream infrastructure '''
+    ''' Initializes the camera and begins capturing frames from it in a loop. '''
     def run(self) -> None:
-        self.camera = cv2.VideoCapture(self.config.camera_index)
+        self.camera = cv2.VideoCapture(self.config.camera_name)
         if not self.camera.isOpened():
             print("Camera is not open!")
             return

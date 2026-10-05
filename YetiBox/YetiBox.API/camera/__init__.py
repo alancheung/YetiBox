@@ -4,17 +4,17 @@ from typing import Protocol
 import queue
 
 class CameraType(Enum):
+    ''' The types of camera applications that could be used. '''
     TEST =  1
-    USB = 2
-    NETWORK = 3
+    OPENCV = 2
     
 
 @dataclass
 class CameraConfig:
-    camera_type: CameraType = CameraType.USB
+    camera_type: CameraType = CameraType.OPENCV
 
     ''' Index of the camera to use '''
-    camera_index: int = 0
+    camera_name: str = "rtsp://yetibox-camera:8554/cam"
 
     ''' Should the video stream be displayed locally for testing '''
     local_display: bool = False

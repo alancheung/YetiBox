@@ -63,7 +63,7 @@ class CameraWorker(mp.Process):
     def __create_camera(self, input_queue: ThreadQueue, config: CameraConfig) -> ICamera:
         ''' Initializes the camera used by this worker '''
         match config.camera_type:
-            case CameraType.USB:
+            case CameraType.OPENCV:
                 return OpenCvCamera(data_queue=input_queue, config=config)
             case _:
                 raise ValueError(f"Camera of type {config.camera_type} is unsupported!")
