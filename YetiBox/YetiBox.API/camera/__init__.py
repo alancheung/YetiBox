@@ -46,8 +46,7 @@ class ICamera(Protocol):
             pass
 
 
-from .network_camera import NetworkCamera
 from .test_camera import TestCamera
-from .usb_camera import OpenCvCamera
+from .opencv_camera import OpenCvCamera
 from .worker import CameraWorker
 
