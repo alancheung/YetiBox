@@ -6,7 +6,7 @@ from time import sleep
 
 import cv2
 
-from camera import CameraConfig, CameraType, ICamera, UsbCamera
+from camera import CameraConfig, CameraType, ICamera, OpenCvCamera
 
 
 class CameraWorker(mp.Process):
@@ -64,7 +64,7 @@ class CameraWorker(mp.Process):
         ''' Initializes the camera used by this worker '''
         match config.camera_type:
             case CameraType.USB:
-                return UsbCamera(data_queue=input_queue, config=config)
+                return OpenCvCamera(data_queue=input_queue, config=config)
             case _:
                 raise ValueError(f"Camera of type {config.camera_type} is unsupported!")
 

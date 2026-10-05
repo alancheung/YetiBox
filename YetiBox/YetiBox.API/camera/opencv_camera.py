@@ -4,7 +4,7 @@ from camera import CameraConfig
 
 
 ''' ICamera that retrieves camera images from a USB camera and makes them available '''
-class UsbCamera():
+class OpenCvCamera():
     ''' Constructor '''
     def __init__(self, data_queue: queue.Queue, config: CameraConfig):
         self.data_queue = data_queue

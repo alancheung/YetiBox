@@ -48,6 +48,6 @@ class ICamera(Protocol):
 
 from .network_camera import NetworkCamera
 from .test_camera import TestCamera
-from .usb_camera import UsbCamera
+from .usb_camera import OpenCvCamera
 from .worker import CameraWorker
 
