@@ -1,5 +1,5 @@
 import './App.scss'
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 function PayloadComponent({ loading, error, data }: { loading: boolean, error: string | null, data: any }): React.JSX.Element {
     if (loading) {
@@ -18,6 +18,7 @@ function AppComponent(): React.JSX.Element {
     const [loading, setLoading] = useState(false);
     const [streaming, setStreaming] = useState(false);
     const [date, setDate] = useState(() => new Date());
+    const streamImageRef = useRef<HTMLImageElement>(null);
 
     const clickStart = async () => {
         setLoading(true);
@@ -78,6 +79,18 @@ function AppComponent(): React.JSX.Element {
         };
     }, [imageSrc]);
 
+    useLayoutEffect(() => {
+        const image = streamImageRef.current;
+        if (!streaming || !image) {
+            return;
+        }
+
+        image.src = 'http://localhost:8000/capture/stream';
+        return () => {
+            image?.removeAttribute('src');
+        };
+    }, [streaming]);
+
     return (
         <>
             <button onClick={clickStart} disabled={loading}>
@@ -96,7 +109,7 @@ function AppComponent(): React.JSX.Element {
             <hr />
 
             {!!imageSrc && <img src={imageSrc}/>}
-            {!!streaming && <img src="http://localhost:8000/capture/stream" />}
+            {!!streaming && <img ref={streamImageRef} alt="Live camera feed" />}
         </>
     );
 }
