@@ -1,4 +1,7 @@
 # YetiBox
+## Overview
+<img width="1254" height="1254" alt="image" src="https://github.com/user-attachments/assets/44d2c701-d3f6-4376-9a97-c446f49cc1bd" />
+<i>Image is AI generated</i>
 
 ## Resources
 ### Miro
