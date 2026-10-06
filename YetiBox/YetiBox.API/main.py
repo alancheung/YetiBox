@@ -1,4 +1,5 @@
 from contextlib import AsyncExitStack, asynccontextmanager
+from functools import lru_cache
 import cv2
 import queue
 import threading
@@ -7,15 +8,21 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-import constants
 import camera
 import controllers
+import settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with AsyncExitStack() as stack:
+        app.settings = get_settings()
+
         await stack.enter_async_context(controllers.stream_lifespan(app))
         yield
+
+@lru_cache
+def get_settings():
+    return settings.Settings()
 
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(
@@ -29,4 +36,10 @@ app.include_router(controllers.stream_router)
 app.include_router(controllers.decompiler_router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=constants.LOCAL_HOST_IP, port=constants.PORT)
+    applicationSettings = settings.Settings()
+    listenOn = settings.LOCAL_HOST_IP
+
+    if applicationSettings.accept_external_traffic:
+        listenOn = settings.ALL_IP
+
+    uvicorn.run(app, host=listenOn, port=applicationSettings.port)

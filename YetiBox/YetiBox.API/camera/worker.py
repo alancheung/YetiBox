@@ -6,7 +6,8 @@ from time import sleep
 
 import cv2
 
-from camera import CameraConfig, CameraType, ICamera, OpenCvCamera
+from camera import CameraType, ICamera, OpenCvCamera
+from settings import CameraConfig
 
 
 class CameraWorker(mp.Process):

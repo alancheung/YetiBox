@@ -7,7 +7,8 @@ import cv2
 from fastapi import APIRouter, FastAPI, Request, Response, status
 from fastapi.responses import StreamingResponse
 
-import camera
+from camera import CameraWorker
+from settings import CameraConfig, Settings
 
 
 raw_queue = mp.Queue(maxsize=1)
@@ -17,7 +18,9 @@ processed_queue = mp.Queue(maxsize=1)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     ''' FastAPI lifespan to handle multiprocess threading '''
-    app.camera_worker = camera.CameraWorker(config=camera.CameraConfig(local_display=True), raw_queue=raw_queue, processed_queue=processed_queue)
+    appSettings: Settings = app.settings
+
+    app.camera_worker = CameraWorker(config=appSettings.camera_config, raw_queue=raw_queue, processed_queue=processed_queue)
     app.camera_worker.start()
 
     try:
@@ -37,8 +40,8 @@ def get_status() -> str:
 @router.post("/start")
 def start() -> None:
     '''
-   Start the camera stream 
-   TODO should use events for this
+    Start the camera stream 
+    TODO should use events for this
     '''
     pass
 

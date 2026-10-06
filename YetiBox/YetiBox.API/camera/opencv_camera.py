@@ -1,6 +1,6 @@
 import queue
 import cv2
-from camera import CameraConfig
+from settings import CameraConfig
 
 
 ''' ICamera that retrieves camera images using OpenCV and makes them available '''

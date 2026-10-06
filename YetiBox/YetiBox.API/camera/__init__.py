@@ -1,23 +1,8 @@
 from dataclasses import dataclass
-from enum import Enum, auto
 from typing import Protocol
 import queue
 
-class CameraType(Enum):
-    ''' The types of camera applications that could be used. '''
-    TEST =  1
-    OPENCV = 2
-    
-
-@dataclass
-class CameraConfig:
-    camera_type: CameraType = CameraType.OPENCV
-
-    ''' Index of the camera to use '''
-    camera_name: str = "rtsp://yetibox-camera:8554/cam"
-
-    ''' Should the video stream be displayed locally for testing '''
-    local_display: bool = False
+from settings import CameraType
 
 ''' Interface for a camera '''
 class ICamera(Protocol):
@@ -49,4 +34,3 @@ class ICamera(Protocol):
 from .test_camera import TestCamera
 from .opencv_camera import OpenCvCamera
 from .worker import CameraWorker
-
