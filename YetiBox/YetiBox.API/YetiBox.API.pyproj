@@ -37,6 +37,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="camera\worker.py" />
+    <Compile Include="homeassistant\homeassistant_gateway.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="homeassistant\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="settings.py">
       <SubType>Code</SubType>
     </Compile>
@@ -84,12 +90,14 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".env.example" />
     <Content Include=".env" />
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="controllers\" />
     <Folder Include="camera\" />
+    <Folder Include="homeassistant\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

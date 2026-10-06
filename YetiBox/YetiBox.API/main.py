@@ -11,12 +11,13 @@ from fastapi.middleware.cors import CORSMiddleware
 import camera
 import controllers
 import settings
+from homeassistant import HomeAssistantGateway
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with AsyncExitStack() as stack:
         app.settings = get_settings()
-
+        app.ha_gateway = HomeAssistantGateway(base_url=app.settings.ha_config.url, token=app.settings.ha_config.token)
         await stack.enter_async_context(controllers.stream_lifespan(app))
         yield
 
@@ -41,5 +42,5 @@ if __name__ == "__main__":
 
     if applicationSettings.accept_external_traffic:
         listenOn = settings.ALL_IP
-
+        
     uvicorn.run(app, host=listenOn, port=applicationSettings.port)

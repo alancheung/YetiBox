@@ -34,6 +34,16 @@ class CameraConfig:
     local_display: bool = False
     """ Should the video stream be displayed locally for testing """
 
+@dataclass
+class HomeAssistantConfig:
+    """ Configurations values for home assistant """
+    
+    token: str
+    """ The long lived token assigned to this application """
+
+    url: str
+    """ The URL of the home assistant instance. """
+
 class Settings(BaseSettings):
     """ The application settings object """
 
@@ -45,5 +55,8 @@ class Settings(BaseSettings):
 
     camera_config: CameraConfig
     """ Configuration values for the camera system """
+
+    ha_config: HomeAssistantConfig
+    """ Configuration values for interacting with Home Assistant """
 
     model_config = SettingsConfigDict(env_file=".env", env_nested_delimiter="__")
