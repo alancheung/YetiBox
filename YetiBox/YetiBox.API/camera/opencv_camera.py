@@ -14,7 +14,14 @@ class OpenCvCamera():
 
     ''' Initializes the camera and begins capturing frames from it in a loop. '''
     def run(self) -> None:
-        self.camera = cv2.VideoCapture(self.config.camera_name)
+        # Allow them to pass either '0' (for USB) or a string for network cameras.
+        parsed_camera_name = self.config.camera_name
+        try:
+            parsed_camera_name = int(parsed_camera_name)
+        except (ValueError, TypeError):
+            pass # Hopefully it's a string name so continue
+
+        self.camera = cv2.VideoCapture(parsed_camera_name)
         if not self.camera.isOpened():
             print("Camera is not open!")
             return

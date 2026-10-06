@@ -19,8 +19,9 @@ processed_queue = mp.Queue(maxsize=1)
 async def lifespan(app: FastAPI):
     ''' FastAPI lifespan to handle multiprocess threading '''
     appSettings: Settings = app.settings
+    gateway = app.ha_gateway
 
-    app.camera_worker = CameraWorker(config=appSettings.camera_config, raw_queue=raw_queue, processed_queue=processed_queue)
+    app.camera_worker = CameraWorker(config=appSettings.camera_config, raw_queue=raw_queue, processed_queue=processed_queue, gateway=gateway)
     app.camera_worker.start()
 
     try:

@@ -8,10 +8,10 @@ import cv2
 
 from camera import CameraType, ICamera, OpenCvCamera
 from settings import CameraConfig
-
+from homeassistant import HomeAssistantGateway
 
 class CameraWorker(mp.Process):
-    def __init__(self, config: CameraConfig, raw_queue: mp.Queue, processed_queue: mp.Queue):
+    def __init__(self, config: CameraConfig, raw_queue: mp.Queue, processed_queue: mp.Queue, gateway: HomeAssistantGateway):
         super().__init__()
         # Exits on crash
         self.daemon = True
@@ -19,6 +19,10 @@ class CameraWorker(mp.Process):
         self.config = config
         self.raw_queue = raw_queue
         self.processed_queue = processed_queue
+        self.gateway = gateway
+
+        # TODO Testing variable
+        self.TODO_TEST = False
 
     def run(self) -> None:
         ''' The main work process loop.
@@ -74,7 +78,11 @@ class CameraWorker(mp.Process):
         if bbox is not None and data:
             bbox = bbox.astype(int)
             cv2.polylines(frame, [bbox], isClosed=True, color=(0, 255, 0), thickness=3)
-            cv2.putText(frame, text=f"QR Code Detected '{data}'! {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+            cv2.putText(frame, text=f"QR '{data}' {self.TODO_TEST}! {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+
+            if not self.TODO_TEST:
+                self.TODO_TEST = True
+                self.gateway.toggle_light()
         else:
             cv2.putText(frame, text=f"Processed {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
         return frame
