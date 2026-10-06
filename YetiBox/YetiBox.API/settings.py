@@ -25,14 +25,17 @@ class CameraType(Enum):
 
 @dataclass
 class CameraConfig:
-    camera_type: CameraType = CameraType.OPENCV
+    camera_type: CameraType
     """ Which camera is being used. """
 
-    camera_name: str = "rtsp://yetibox-camera:8554/cam"
+    camera_name: str
     """ The name of the camera to give to OpenCV. This could be a camera index or a network camera URL. """
     
     local_display: bool = False
     """ Should the video stream be displayed locally for testing """
+
+    last_detection_valid_secs: float = 30.0
+    """ How long should the last detected item be ignored? Effectively a debounce from triggering on the same item for 30 seconds """
 
 @dataclass
 class HomeAssistantConfig:

@@ -2,7 +2,7 @@
 import multiprocessing as mp
 from queue import Queue as ThreadQueue, Empty as QueueEmpty, Full as QueueFull
 from threading import Thread
-from time import sleep
+from time import sleep, time
 
 import cv2
 
@@ -21,8 +21,7 @@ class CameraWorker(mp.Process):
         self.processed_queue = processed_queue
         self.gateway = gateway
 
-        # TODO Testing variable
-        self.TODO_TEST = False
+        self.last_detection: tuple[float, str] = [time.monotonic(), '']
 
     def run(self) -> None:
         ''' The main work process loop.
@@ -48,7 +47,8 @@ class CameraWorker(mp.Process):
                     continue # skips instead of pass
                 
                 try:
-                    processed_frame = self.process_frame(raw_frame)
+                    processed_frame, data = self._process_frame(raw_frame)
+                    self._handle_detection(detected_data=data)
                     self._put_frame(self.processed_queue, processed_frame)
                     
                     if self.config.local_display:
@@ -73,19 +73,25 @@ class CameraWorker(mp.Process):
             case _:
                 raise ValueError(f"Camera of type {config.camera_type} is unsupported!")
 
-    def process_frame(self, frame):
+    def _process_frame(self, frame):
         data, bbox, _ = self.qr_detector.detectAndDecode(frame)
-        if bbox is not None and data:
+
+        detected_data = data if bbox is not None and data else None
+        if detected_data:
             bbox = bbox.astype(int)
             cv2.polylines(frame, [bbox], isClosed=True, color=(0, 255, 0), thickness=3)
             cv2.putText(frame, text=f"QR '{data}' {self.TODO_TEST}! {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
-
-            if not self.TODO_TEST:
-                self.TODO_TEST = True
-                self.gateway.toggle_light()
         else:
             cv2.putText(frame, text=f"Processed {datetime.now()}", org=(20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.8, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
-        return frame
+        return frame, detected_data
+
+    def _handle_detection(self, detected_data: str) -> None:
+        """ Take action when a valid code has been detected """
+        last_timestamp, last_data = self.last_detection
+        if last_data != detected_data or time.monotonic() - last_timestamp > self.config.last_detection_valid_secs:
+            match detected_data:
+                case _:
+                    self.gateway.toggle_light_test()
 
     @staticmethod
     def _put_frame(queue: mp.Queue, frame) -> None:

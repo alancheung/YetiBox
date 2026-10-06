@@ -17,7 +17,7 @@ class HomeAssistantGateway:
         response.raise_for_status()
         return response.json()
 
-    def toggle_light(self) -> None:
+    def toggle_light_test(self) -> None:
         entity_payload = {
             "entity_id": "light.office_one",
         }
