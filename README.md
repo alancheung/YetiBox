@@ -1,6 +1,9 @@
 # YetiBox
 ## Overview
+<img width="627" height="627" alt="image" src="https://github.com/user-attachments/assets/44d2c701-d3f6-4376-9a97-c446f49cc1bd" />
+<p><i>AI generated image</i></p>
 
+This project is meant to teach some basics of Python and React while being a cool idea for home control. A network (via FFMPEG/MediaMTX) or local camera streams a video feed to a Python application running both OpenCV and FastAPI. When a QR code is detected by OpenCV's QR code detector, then a call to HomeAssistant triggers some automation. A React frontend gives debugging and configuration control on the entire application. 
 
 ## Resources
 ### Miro
