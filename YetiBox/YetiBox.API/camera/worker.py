@@ -2,7 +2,7 @@
 import multiprocessing as mp
 from queue import Queue as ThreadQueue, Empty as QueueEmpty, Full as QueueFull
 from threading import Thread
-from time import sleep, time
+from time import monotonic
 
 import cv2
 
@@ -21,7 +21,7 @@ class CameraWorker(mp.Process):
         self.processed_queue = processed_queue
         self.gateway = gateway
 
-        self.last_detection: tuple[float, str] = [time.monotonic(), '']
+        self.last_detection: tuple[float, str] = [monotonic(), '']
 
     def run(self) -> None:
         ''' The main work process loop.
@@ -88,7 +88,7 @@ class CameraWorker(mp.Process):
     def _handle_detection(self, detected_data: str) -> None:
         """ Take action when a valid code has been detected """
         last_timestamp, last_data = self.last_detection
-        if last_data != detected_data or time.monotonic() - last_timestamp > self.config.last_detection_valid_secs:
+        if last_data != detected_data or monotonic() - last_timestamp > self.config.last_detection_valid_secs:
             match detected_data:
                 case _:
                     self.gateway.toggle_light_test()
@@ -109,5 +109,4 @@ class CameraWorker(mp.Process):
                 # Put the next one here, we don't care if they get it or not.
                 pass 
             queue.put_nowait(frame)
-
 
