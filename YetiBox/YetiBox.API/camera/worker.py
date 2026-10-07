@@ -89,11 +89,15 @@ class CameraWorker(mp.Process):
 
     def _handle_detection(self, detected_data: str) -> None:
         """ Take action when a valid code has been detected """
+        if not detected_data:
+            return
+
         last_timestamp, last_data = self.last_detection
-        if last_data != detected_data or monotonic() - last_timestamp > self.config.last_detection_valid_secs:
-            match detected_data:
-                case _:
-                    self.gateway.toggle_light_test()
+        if last_data == detected_data and monotonic() - last_timestamp <= self.config.last_detection_valid_secs:
+            return
+
+        self.gateway.toggle_light_test()
+        self.last_detection = (monotonic(), detected_data)
 
     @staticmethod
     def _put_frame(queue: mp.Queue, frame) -> None:
@@ -111,4 +115,3 @@ class CameraWorker(mp.Process):
                 # Put the next one here, we don't care if they get it or not.
                 pass 
             queue.put_nowait(frame)
-
