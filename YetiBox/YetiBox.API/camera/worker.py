@@ -6,7 +6,7 @@ from time import monotonic
 
 import cv2
 
-from camera import CameraType, ICamera, OpenCvCamera
+from camera import CameraType, ICamera, OpenCvCamera, TestCamera
 from settings import CameraConfig
 from homeassistant import HomeAssistantGateway
 
@@ -68,6 +68,8 @@ class CameraWorker(mp.Process):
     def __create_camera(self, input_queue: ThreadQueue, config: CameraConfig) -> ICamera:
         ''' Initializes the camera used by this worker '''
         match config.camera_type:
+            case CameraType.TEST:
+                return TestCamera(data_queue=input_queue)
             case CameraType.OPENCV:
                 return OpenCvCamera(data_queue=input_queue, config=config)
             case _:
