@@ -11,18 +11,39 @@ from settings import CameraConfig
 from homeassistant import HomeAssistantGateway
 
 class CameraWorker(mp.Process):
-    """ """
+    """ The Process child that handles IO and CPU processing for camera frames. """
     def __init__(self, config: CameraConfig, raw_queue: mp.Queue, processed_queue: mp.Queue, gateway: HomeAssistantGateway):
         super().__init__()
         # Exits on crash
         self.daemon = True
 
         self.config = config
+        """ Camera configuration """
         self.raw_queue = raw_queue
+        """ The queue to place raw images """
         self.processed_queue = processed_queue
+        """ The queue to place processed images """
         self.gateway = gateway
+        """ The outbound messaging gateway """
 
         self.last_detection: tuple[float, str] = [monotonic(), '']
+        """ Track the last detection and the difference using monotonic. """
+
+    def __setup_io_thread(self, config: CameraConfig) -> Thread:
+        """ Setup the IO thread to input unprocessed frames """
+        self.input_queue = ThreadQueue(maxsize=1)
+        self.camera = self.__create_camera(self.input_queue, config);
+        return Thread(name="Camera Thread", target=self.camera.run)
+    
+    def __create_camera(self, input_queue: ThreadQueue, config: CameraConfig) -> ICamera:
+        """ Initializes the camera used by this worker """
+        match config.camera_type:
+            case CameraType.TEST:
+                return TestCamera(data_queue=input_queue)
+            case CameraType.OPENCV:
+                return OpenCvCamera(data_queue=input_queue, config=config)
+            case _:
+                raise ValueError(f"Camera of type {config.camera_type} is unsupported!")
 
     def run(self) -> None:
         """ The main work process loop.
@@ -59,22 +80,6 @@ class CameraWorker(mp.Process):
                     continue # skips instead of pass
         except BaseException as ex:
             print(f"Exception encountered in camera worker! Exception {ex}")
-
-    def __setup_io_thread(self, config: CameraConfig) -> Thread:
-        """ Setup the IO thread to input unprocessed frames """
-        self.input_queue = ThreadQueue(maxsize=1)
-        self.camera = self.__create_camera(self.input_queue, config);
-        return Thread(name="Camera Thread", target=self.camera.run)
-    
-    def __create_camera(self, input_queue: ThreadQueue, config: CameraConfig) -> ICamera:
-        """ Initializes the camera used by this worker """
-        match config.camera_type:
-            case CameraType.TEST:
-                return TestCamera(data_queue=input_queue)
-            case CameraType.OPENCV:
-                return OpenCvCamera(data_queue=input_queue, config=config)
-            case _:
-                raise ValueError(f"Camera of type {config.camera_type} is unsupported!")
 
     def _process_frame(self, frame):
         data, bbox, _ = self.qr_detector.detectAndDecode(frame)
