@@ -24,7 +24,7 @@ class OpenCvCamera():
         self.camera = cv2.VideoCapture(parsed_camera_name)
         if not self.camera.isOpened():
             print("Camera is not open!")
-            return
+            raise RuntimeError(f"Camera at {parsed_camera_name} is not available!");
         self.ready = True
 
         while (True):

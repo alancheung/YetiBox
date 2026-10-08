@@ -57,16 +57,15 @@ class CameraWorker(mp.Process):
         
         try:
             while True:
-                if not self.camera.ready:
+                try:
+                    raw_frame = self.input_queue.get(timeout=1)
+                except QueueEmpty:
+                    if not self.camera_thread.is_alive():
+                        raise RuntimeError("Camera thread stopped before producing a frame.")
                     continue
 
-                try:
-                    raw_frame = self.input_queue.get_nowait()
-
-                    # Make the raw frame available ASAP for viewers
-                    self._put_frame(self.raw_queue, raw_frame)
-                except QueueEmpty:
-                    continue # skips instead of pass
+                # Make the raw frame available ASAP for viewers
+                self._put_frame(self.raw_queue, raw_frame)
                 
                 try:
                     processed_frame, data = self._process_frame(raw_frame)
