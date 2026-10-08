@@ -17,7 +17,7 @@ processed_queue = mp.Queue(maxsize=1)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    ''' FastAPI lifespan to handle multiprocess threading '''
+    """ FastAPI lifespan to handle multiprocess threading """
     appSettings: Settings = app.settings
     gateway = app.ha_gateway
 
@@ -40,23 +40,23 @@ def get_status() -> str:
 
 @router.post("/start")
 def start() -> None:
-    '''
+    """
     Start the camera stream 
     TODO should use events for this
-    '''
+    """
     pass
 
 @router.post("/stop")
 def stop() -> None:
-    '''
+    """
    Stop the camera stream 
    TODO should use events for this
-    '''
+    """
     pass
 
 @router.get("/frame")
 def get_frame(request: Request) -> Response:
-    ''' Display the last frame '''
+    """ Display the last frame """
     try:
         frame = processed_queue.get(timeout=3)
     except queue.Empty:

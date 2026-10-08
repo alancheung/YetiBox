@@ -5,9 +5,9 @@ from pathlib import Path
 import cv2
 
 
-''' A camera for streaming a static test image. '''
+""" A camera for streaming a static test image. """
 class TestCamera:
-    ''' Constructor '''
+    """ Constructor """
     def __init__(self, data_queue: queue.Queue) -> None:
         self.data_queue = data_queue
         self.ready = False

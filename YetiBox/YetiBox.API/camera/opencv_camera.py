@@ -3,16 +3,16 @@ import cv2
 from settings import CameraConfig
 
 
-''' ICamera that retrieves camera images using OpenCV and makes them available '''
+""" ICamera that retrieves camera images using OpenCV and makes them available """
 class OpenCvCamera():
-    ''' Constructor '''
+    """ Constructor """
     def __init__(self, data_queue: queue.Queue, config: CameraConfig):
         self.data_queue = data_queue
         self.config = config
         self.ready = False
         pass
 
-    ''' Initializes the camera and begins capturing frames from it in a loop. '''
+    """ Initializes the camera and begins capturing frames from it in a loop. """
     def run(self) -> None:
         # Allow them to pass either '0' (for USB) or a string for network cameras.
         parsed_camera_name = self.config.camera_name
@@ -41,7 +41,7 @@ class OpenCvCamera():
                 # If it fails again...just fail it.
                 self.data_queue.put_nowait(frame)
                 
-    ''' Clears any held data '''
+    """ Clears any held data """
     def clear(self) -> None:
         try:    
             _ = self.data_queue.get_nowait()

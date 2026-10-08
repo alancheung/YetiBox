@@ -4,14 +4,14 @@ import queue
 
 from settings import CameraType
 
-''' Interface for a camera '''
+""" Interface for a camera """
 class ICamera(Protocol):
-    ''' Constructor '''
+    """ Constructor """
     def __init__(self, data_queue):
         self.data_queue = data_queue
         pass
 
-    ''' Main entry point to run the entire IStream infrastructure '''
+    """ Main entry point to run the entire IStream infrastructure """
     def run(self) -> None:
         while (True):
             data = self.get_data()
@@ -23,7 +23,7 @@ class ICamera(Protocol):
                 # If it fails again...just fail it.
                 self.data_queue.put_nowait(data)
 
-    ''' Clears any held data '''
+    """ Clears any held data """
     def clear(self) -> None:
         try:    
             _ = self.data_queue.get_nowait()

@@ -11,6 +11,7 @@ from settings import CameraConfig
 from homeassistant import HomeAssistantGateway
 
 class CameraWorker(mp.Process):
+    """ """
     def __init__(self, config: CameraConfig, raw_queue: mp.Queue, processed_queue: mp.Queue, gateway: HomeAssistantGateway):
         super().__init__()
         # Exits on crash
@@ -24,11 +25,11 @@ class CameraWorker(mp.Process):
         self.last_detection: tuple[float, str] = [monotonic(), '']
 
     def run(self) -> None:
-        ''' The main work process loop.
+        """ The main work process loop.
         1. Read unprocessed frame via a dedicated camera thread.
         2. Run OpenCV on unprocessed frame creating a processed frame
         3. Output the processed frame.
-        '''
+        """
         self.camera_thread = self.__setup_io_thread(self.config)
         self.camera_thread.start()
         self.qr_detector = cv2.QRCodeDetector()
@@ -60,13 +61,13 @@ class CameraWorker(mp.Process):
             print(f"Exception encountered in camera worker! Exception {ex}")
 
     def __setup_io_thread(self, config: CameraConfig) -> Thread:
-        ''' Setup the IO thread to input unprocessed frames '''
+        """ Setup the IO thread to input unprocessed frames """
         self.input_queue = ThreadQueue(maxsize=1)
         self.camera = self.__create_camera(self.input_queue, config);
         return Thread(name="Camera Thread", target=self.camera.run)
     
     def __create_camera(self, input_queue: ThreadQueue, config: CameraConfig) -> ICamera:
-        ''' Initializes the camera used by this worker '''
+        """ Initializes the camera used by this worker """
         match config.camera_type:
             case CameraType.TEST:
                 return TestCamera(data_queue=input_queue)
