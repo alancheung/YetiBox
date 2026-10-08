@@ -5,7 +5,7 @@ from collections.abc import Iterator
 
 import cv2
 from fastapi import APIRouter, FastAPI, Request, Response, status
-from fastapi.responses import StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 
 from camera import CameraWorker
 from settings import CameraConfig, Settings
@@ -35,15 +35,25 @@ async def lifespan(app: FastAPI):
 router = APIRouter(prefix="/capture")
 
 @router.get("/")
-def get_status() -> str:
-    pass
+def get_status(request: Request) -> JSONResponse:
+    worker: CameraWorker = request.app.camera_worker
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"Worker": worker.is_alive()},
+    )
 
 @router.post("/start")
-def start() -> None:
+def start(request: Request) -> None:
     """
     Start the camera stream 
     TODO should use events for this
     """
+    worker: CameraWorker = request.app.camera_worker
+
+    if worker is None or not worker.is_alive():
+        worker.kill() if worker is not None else _
+        request.app.camera_worker = CameraWorker(config=request.app.settings.camera_config, raw_queue=raw_queue, processed_queue=processed_queue, gateway=requestapp.ha_gateway)
+        request.app.camera_worker.start()
     pass
 
 @router.post("/stop")

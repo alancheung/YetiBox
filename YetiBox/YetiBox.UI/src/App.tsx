@@ -1,24 +1,34 @@
 import './App.scss'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-function PayloadComponent({ loading, error, data }: { loading: boolean, error: string | null, data: any }): React.JSX.Element {
+type CaptureStatus = {
+    Worker: boolean;
+};
+
+function PayloadComponent({ loading, error, data }: { loading: boolean, error: string | null, data: CaptureStatus | null }): React.JSX.Element {
     if (loading) {
         return <>Loading...</>;
     } else if (error) {
         return <>Error - {error}</>;
     } else {
-        return <>{data}</>;
+        return <>{data ? `Worker is ${data.Worker ? 'running' : 'not running'}` : 'No status available.'}</>;
     }
 }
 
 function AppComponent(): React.JSX.Element {
-    const [data] = useState(null);
+    const [data, setData] = useState<CaptureStatus | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [imageSrc, setImageSrc] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [streaming, setStreaming] = useState(false);
     const [date, setDate] = useState(() => new Date());
     const streamImageRef = useRef<HTMLImageElement>(null);
+
+    useEffect(() => {
+        const controller = new AbortController();
+        void clickGetStatus(controller.signal);
+        return () => controller.abort();
+    }, []);
 
     const clickStart = async () => {
         setLoading(true);
@@ -71,6 +81,31 @@ function AppComponent(): React.JSX.Element {
         }
     };
 
+    const clickGetStatus = async (signal: AbortSignal) => {
+            try {
+                const response = await fetch('http://localhost:8000/capture/', {
+                    method: 'GET',
+                    signal: signal,
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const status: CaptureStatus = await response.json();
+                setData(status);
+            } catch (err: unknown) {
+                if (!signal.aborted) {
+                    setError(err instanceof Error ? err.message : String(err));
+                }
+            } finally {
+                if (!signal.aborted) {
+                    setLoading(false);
+                    setDate(() => new Date());
+                }
+            }
+        };
+
     useEffect(() => {
         return () => {
             if (imageSrc) {
@@ -93,6 +128,9 @@ function AppComponent(): React.JSX.Element {
 
     return (
         <>
+            <button onClick={clickGetStatus} disabled={loading}>
+                <label>Get Status</label>
+            </button>
             <button onClick={clickStart} disabled={loading}>
                 <label>Start Capture</label>
             </button>
