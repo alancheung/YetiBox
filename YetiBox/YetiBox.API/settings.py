@@ -4,11 +4,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Final
 
 
-""" A constant for the localhost IP address """
 LOCAL_HOST_IP: Final = "127.0.0.1"
+""" A constant for the localhost IP address """
 
-""" A constant for the ALL IP address """
 ALL_IP: Final = "0.0.0.0"
+""" A constant for the ALL IP address """
 
 class CameraType(Enum):
     """The types of camera applications that could be used."""
