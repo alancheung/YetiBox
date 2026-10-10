@@ -35,7 +35,7 @@ function AppComponent(): React.JSX.Element {
         setError(null);
 
         try {
-            const response = await fetch('/capture/start', {
+            const response = await fetch('/api/capture/start', {
                 method: 'POST'
             });
 
@@ -63,7 +63,7 @@ function AppComponent(): React.JSX.Element {
         setError(null);
 
         try {
-            const response = await fetch('/capture/frame');
+            const response = await fetch('/api/capture/frame');
             if (response.status === 204) {
                 throw new Error('No frame is currently available.');
             }
@@ -83,7 +83,7 @@ function AppComponent(): React.JSX.Element {
 
     const getStatus = async (signal?: AbortSignal) => {
             try {
-                const response = await fetch('/capture/', {
+                const response = await fetch('/api/capture/', {
                     method: 'GET',
                     signal,
                 });
@@ -120,7 +120,7 @@ function AppComponent(): React.JSX.Element {
             return;
         }
 
-        image.src = '/capture/stream';
+        image.src = '/api/capture/stream';
         return () => {
             image?.removeAttribute('src');
         };

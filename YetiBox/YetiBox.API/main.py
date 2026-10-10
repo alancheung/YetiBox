@@ -33,8 +33,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(controllers.stream_router)
-app.include_router(controllers.decompiler_router)
+app.include_router(controllers.stream_router, prefix="/api")
+app.include_router(controllers.decompiler_router, prefix="/api")
 
 if __name__ == "__main__":
     applicationSettings = settings.Settings()
