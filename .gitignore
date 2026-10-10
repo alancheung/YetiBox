@@ -648,3 +648,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# OpenAPI Generation
+/YetiBox/YetiBox.UI/src/api/generated
+/YetiBox/YetiBox.UI/openapi.json
