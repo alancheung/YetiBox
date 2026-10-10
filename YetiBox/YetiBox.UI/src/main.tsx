@@ -1,13 +1,13 @@
+import './index.scss'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.scss'
-import AppComponent from './App.tsx'
 import { BrowserRouter } from 'react-router'
+import { YetiBoxRouter } from './Router'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AppComponent />
+      <YetiBoxRouter />
     </BrowserRouter>
   </StrictMode>,
 )
