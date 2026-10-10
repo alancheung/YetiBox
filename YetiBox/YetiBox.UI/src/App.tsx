@@ -26,7 +26,7 @@ function AppComponent(): React.JSX.Element {
 
     useEffect(() => {
         const controller = new AbortController();
-        void clickGetStatus(controller.signal);
+        void getStatus(controller.signal);
         return () => controller.abort();
     }, []);
 
@@ -81,11 +81,11 @@ function AppComponent(): React.JSX.Element {
         }
     };
 
-    const clickGetStatus = async (signal: AbortSignal) => {
+    const getStatus = async (signal?: AbortSignal) => {
             try {
                 const response = await fetch('http://localhost:8000/capture/', {
                     method: 'GET',
-                    signal: signal,
+                    signal,
                 });
 
                 if (!response.ok) {
@@ -95,11 +95,11 @@ function AppComponent(): React.JSX.Element {
                 const status: CaptureStatus = await response.json();
                 setData(status);
             } catch (err: unknown) {
-                if (!signal.aborted) {
+                if (!signal?.aborted) {
                     setError(err instanceof Error ? err.message : String(err));
                 }
             } finally {
-                if (!signal.aborted) {
+                if (!signal?.aborted) {
                     setLoading(false);
                     setDate(() => new Date());
                 }
@@ -128,7 +128,7 @@ function AppComponent(): React.JSX.Element {
 
     return (
         <>
-            <button onClick={clickGetStatus} disabled={loading}>
+            <button onClick={() => getStatus()} disabled={loading}>
                 <label>Get Status</label>
             </button>
             <button onClick={clickStart} disabled={loading}>
