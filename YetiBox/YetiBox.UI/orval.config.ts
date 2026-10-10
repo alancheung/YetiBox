@@ -10,7 +10,6 @@ export default defineConfig({
       target: './src/api/generated/endpoints.ts',
       schemas: './src/api/generated/models',
       client: 'fetch',
-      baseUrl: 'http://localhost:8000',
     },
   },
 });
