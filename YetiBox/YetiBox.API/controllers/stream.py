@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
             app.camera_worker.terminate()
             app.camera_worker.join(timeout=1)
 
-router = APIRouter(prefix="/capture")
+router = APIRouter(prefix="/capture", tags=["capture"])
 
 @router.get("/")
 def get_status(request: Request) -> JSONResponse:

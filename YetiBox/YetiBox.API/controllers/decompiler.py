@@ -3,7 +3,7 @@ import dis
 import fastapi
 
 
-router = fastapi.APIRouter(prefix="/decompiler")
+router = fastapi.APIRouter(prefix="/decompiler", tags=["decompiler"])
 
 @router.get("/dis/{dis_query}")
 def dis_decompiler(dis_query: str) -> fastapi.Response:
