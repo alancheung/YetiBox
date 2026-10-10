@@ -3,7 +3,7 @@ import { defineConfig } from 'orval';
 export default defineConfig({
   yetibox: {
     input: {
-      target: './openapi.json',
+      target: './src/api/generated/openapi.json',
     },
     output: {
       mode: 'tags-split',

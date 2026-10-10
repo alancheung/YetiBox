@@ -8,7 +8,7 @@
     "build": "npm run api:generate && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "api:schema": "python ../YetiBox.API/openapi_generator.py --output-file ./openapi.json",
+    "api:schema": "python ../YetiBox.API/openapi_generator.py --output-file ./src/api/generated/openapi.json",
     "api:generate": "npm run api:schema && orval --config ./orval.config.ts"
   },
   "dependencies": {
