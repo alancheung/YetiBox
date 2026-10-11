@@ -1,4 +1,4 @@
-import './Home.scss'
+import styles from './Home.module.scss';
 
 function HomeComponent(): React.JSX.Element {
     return (
