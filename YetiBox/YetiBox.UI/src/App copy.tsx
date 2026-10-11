@@ -15,7 +15,7 @@ function PayloadComponent({ loading, error, data }: { loading: boolean, error: s
     }
 }
 
-function AppComponent(): React.JSX.Element {
+export function MyComponent(): React.JSX.Element {
     const [data, setData] = useState<CaptureStatus | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [imageSrc, setImageSrc] = useState<string | null>(null);
